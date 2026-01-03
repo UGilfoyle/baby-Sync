@@ -32,8 +32,10 @@ export interface DiaperData {
     notes?: string;
 }
 
-// API base URL
-const API_BASE = 'http://localhost:3001';
+// API base URL - same origin in production, localhost in dev
+const API_BASE = typeof window !== 'undefined'
+    ? (window.location.hostname === 'localhost' ? 'http://localhost:3001' : '')
+    : '';
 
 // Stores
 export const activities = writable<Activity[]>([]);

@@ -31,7 +31,14 @@ export function connectWebSocket(): void {
     syncStatus.set('connecting');
 
     try {
-        ws = new WebSocket(`ws://localhost:3001/ws?familyId=${fid}&deviceId=${did}`);
+        // Use same origin in production, localhost in dev
+        const wsProtocol = typeof window !== 'undefined' && window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsHost = typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+            ? window.location.host
+            : 'localhost:3001';
+        const wsUrl = `${wsProtocol}//${wsHost}/ws?familyId=${fid}&deviceId=${did}`;
+
+        ws = new WebSocket(wsUrl);
 
         ws.onopen = () => {
             console.log('[WS] Connected');
